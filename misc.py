@@ -670,11 +670,11 @@ class SpriteDefinition:
                 if len(bit) == 1:
                     bit = bit[0]
 
-                if 'stepsize' in attribs: stepsize = int(attribs['stepsize'])
-                else: stepsize = 1
+                if 'stepsize' in attribs: stepsize = attribs['stepsize']
+                else: stepsize = "1"
                 
-                if 'startat' in attribs: startat = int(attribs['startat'])
-                else: startat = 0
+                if 'startat' in attribs: startat = attribs['startat']
+                else: startat = "0"
 
                 fields.append((2, attribs['title'], bit, max, comment, required, advanced, comment2, advancedcomment, idtype, startat, stepsize))
 

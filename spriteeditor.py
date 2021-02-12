@@ -735,9 +735,24 @@ class SpriteEditorWidget(QtWidgets.QWidget):
             """
             super().__init__()
 
-            self.widget = QtWidgets.QSpinBox()
-            self.widget.setRange(startat, max * stepsize + startat - stepsize)
-            self.widget.setSingleStep(stepsize)
+            self.widget = QtWidgets.QDoubleSpinBox()
+
+            decimals = startat[::-1].find('.')
+            if stepsize[::-1].find('.') > decimals:
+                decimals = stepsize[::-1].find('.')
+            self.widget.setDecimals(decimals)
+            
+            if decimals > 0:
+                self.startat = float(startat)
+                self.stepsize = float(stepsize)
+            else:
+                self.startat = int(startat)
+                self.stepsize = int(stepsize)
+
+            self.widget.setRange(self.startat, max * self.stepsize + self.startat - self.stepsize)
+            self.widget.setSingleStep(self.stepsize)
+            
+            
             self.parent = parent
 
             self.comment = comment
@@ -808,13 +823,11 @@ class SpriteEditorWidget(QtWidgets.QWidget):
 
             self.widget.valueChanged.connect(self.HandleValueChanged)
             self.widget.editingFinished.connect(self.HandleValueEditingFinished)
-            self.widget.setValue(startat)
+            self.widget.setValue(self.startat)
             
             self.bit = bit
             self.required = required
             self.advanced = advanced
-            self.startat = startat
-            self.stepsize = stepsize
             
             layout.addWidget(widget, row, 0, QtCore.Qt.AlignRight)
             layout.addWidget(self.widget, row, 1)
@@ -835,14 +848,14 @@ class SpriteEditorWidget(QtWidgets.QWidget):
             """
             Assigns the selected value to the data
             """
-            value = (self.widget.value() - self.startat) // self.stepsize
+            value = int((self.widget.value() - self.startat) / self.stepsize)
             return self.insertvalue(data, value)
 
         def HandleValueEditingFinished(self):
             """
             Handle the value changing in the spinbox
             """
-            self.widget.setValue((self.widget.value() - self.startat) // self.stepsize * self.stepsize + self.startat)
+            self.widget.setValue((self.widget.value() - self.startat) / self.stepsize * self.stepsize + self.startat)
          
         def HandleValueChanged(self, value):
             """
