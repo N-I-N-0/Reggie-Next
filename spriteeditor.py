@@ -855,7 +855,7 @@ class SpriteEditorWidget(QtWidgets.QWidget):
             """
             Handle the value changing in the spinbox
             """
-            self.widget.setValue((self.widget.value() - self.startat) / self.stepsize * self.stepsize + self.startat)
+            self.widget.setValue(round((self.widget.value() - self.startat) / self.stepsize) * self.stepsize + self.startat)
          
         def HandleValueChanged(self, value):
             """
