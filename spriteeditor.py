@@ -729,14 +729,15 @@ class SpriteEditorWidget(QtWidgets.QWidget):
         Class that decodes/encodes sprite data to/from a spinbox
         """
 
-        def __init__(self, title, bit, max, comment, required, advanced, comment2, commentAdv, layout, row, parent):
+        def __init__(self, title, bit, max, comment, required, advanced, comment2, commentAdv, startat, stepsize, layout, row, parent):
             """
             Creates the widget
             """
             super().__init__()
 
             self.widget = QtWidgets.QSpinBox()
-            self.widget.setRange(0, max - 1)
+            self.widget.setRange(startat, max * stepsize + startat - stepsize)
+            self.widget.setSingleStep(stepsize)
             self.parent = parent
 
             self.comment = comment
@@ -806,10 +807,15 @@ class SpriteEditorWidget(QtWidgets.QWidget):
                 widget.setWordWrap(True)
 
             self.widget.valueChanged.connect(self.HandleValueChanged)
+            self.widget.editingFinished.connect(self.HandleValueEditingFinished)
+            self.widget.setValue(startat)
+            
             self.bit = bit
             self.required = required
             self.advanced = advanced
-
+            self.startat = startat
+            self.stepsize = stepsize
+            
             layout.addWidget(widget, row, 0, QtCore.Qt.AlignRight)
             layout.addWidget(self.widget, row, 1)
 
@@ -822,16 +828,22 @@ class SpriteEditorWidget(QtWidgets.QWidget):
             """
             # check if requirements are met
             self.checkReq(data, first)
-
-            value = self.retrieve(data)
+            value = self.retrieve(data) * self.stepsize + self.startat
             self.widget.setValue(value)
-
+            
         def assign(self, data):
             """
             Assigns the selected value to the data
             """
-            return self.insertvalue(data, self.widget.value())
+            value = (self.widget.value() - self.startat) // self.stepsize
+            return self.insertvalue(data, value)
 
+        def HandleValueEditingFinished(self):
+            """
+            Handle the value changing in the spinbox
+            """
+            self.widget.setValue((self.widget.value() - self.startat) // self.stepsize * self.stepsize + self.startat)
+         
         def HandleValueChanged(self, value):
             """
             Handle the value changing in the spinbox
@@ -1786,7 +1798,7 @@ class SpriteEditorWidget(QtWidgets.QWidget):
                 nf = SpriteEditorWidget.ListPropertyDecoder(f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8], layout, row, self)
 
             elif f[0] == 2:
-                nf = SpriteEditorWidget.ValuePropertyDecoder(f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8], layout, row, self)
+                nf = SpriteEditorWidget.ValuePropertyDecoder(f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8], f[10], f[11], layout, row, self)
 
             elif f[0] == 3:
                 nf = SpriteEditorWidget.BitfieldPropertyDecoder(f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8], layout, row, self)
