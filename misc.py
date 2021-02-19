@@ -532,7 +532,13 @@ class SpriteDefinition:
             elif field.tag == 'value':
                 bit, max_ = self.parseBits(attribs.get("nybble"), attribs.get("bit"))
 
-                fields.append((2, attribs['title'], bit, max_, comment, required, advanced, comment2, advancedcomment, idtype))
+                if 'stepsize' in attribs: stepsize = attribs['stepsize']
+                else: stepsize = "1"
+                
+                if 'startat' in attribs: startat = attribs['startat']
+                else: startat = "0"
+
+                fields.append((2, attribs['title'], bit, max_, comment, required, advanced, comment2, advancedcomment, idtype, startat, stepsize))
 
             elif field.tag == 'bitfield':
                 startbit = int(attribs['startbit'])
@@ -1410,6 +1416,7 @@ def LoadActionsLists():
         (globals_.trans.string('MenuItems', 78), False, 'addarea'),
         (globals_.trans.string('MenuItems', 80), False, 'importarea'),
         (globals_.trans.string('MenuItems', 82), False, 'deletearea'),
+        (globals_.trans.string('MenuItems', 140), False, 'openpuzzle'),
         (globals_.trans.string('MenuItems', 84), False, 'reloadgfx'),
         (globals_.trans.string('MenuItems', 138), False, 'reloaddata'),
     )
@@ -1513,6 +1520,18 @@ class PreferencesDialog(QtWidgets.QDialog):
                 self.psValue = QtWidgets.QSpinBox()
                 self.psValue.setRange(0, 2147483647) # maximum value allowed by qt
 
+                # Puzzle directory
+                puzzleSelectL = QtWidgets.QGridLayout()
+                self.puzzleSelect = QtWidgets.QWidget()
+                self.puzzlePath = QtWidgets.QLabel()
+                self.puzzlePathSelector = QtWidgets.QPushButton("Select")
+                self.puzzlePathSelector.setMaximumWidth(self.puzzlePathSelector.minimumSizeHint().width())
+                self.puzzlePathSelector.clicked.connect(self.SelectPuzzlePy)
+                puzzleSelectL.addWidget(self.puzzlePath, 0, 0)
+                puzzleSelectL.addWidget(self.puzzlePathSelector, 0, 1)
+                puzzleSelectL.setContentsMargins(0, 0, 0, 0)
+                self.puzzleSelect.setLayout(puzzleSelectL)
+
                 # Create the main layout
                 L = QtWidgets.QFormLayout()
                 L.addRow(globals_.trans.string('PrefsDlg', 14), self.Trans)
@@ -1522,6 +1541,7 @@ class PreferencesDialog(QtWidgets.QDialog):
                 L.addWidget(self.zEntIndicator)
                 L.addWidget(self.rdhIndicator)
                 L.addWidget(self.erbIndicator)
+                L.addRow(globals_.trans.string('PrefsDlg', 37), self.puzzleSelect)
                 self.setLayout(L)
 
                 # Set the buttons
@@ -1556,6 +1576,11 @@ class PreferencesDialog(QtWidgets.QDialog):
                 self.epbIndicator.setChecked(globals_.EnablePadding)
                 self.psValue.setEnabled(globals_.EnablePadding)
                 self.psValue.setValue(globals_.PaddingLength)
+                if os.path.isfile(globals_.PuzzlePy):
+                    self.puzzlePath.setText(globals_.PuzzlePy)
+                else:
+                    self.puzzlePath.setText("")
+                    globals_.PuzzlePy = ""
 
             def ClearRecent(self):
                 """
@@ -1564,6 +1589,14 @@ class PreferencesDialog(QtWidgets.QDialog):
                 ans = QtWidgets.QMessageBox.question(None, globals_.trans.string('PrefsDlg', 17), globals_.trans.string('PrefsDlg', 18), QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
                 if ans != QtWidgets.QMessageBox.Yes: return
                 globals_.mainWindow.RecentMenu.clearAll()
+
+            def SelectPuzzlePy(self):
+                """
+                Handle the select Puzzle path button being clicked
+                """
+                path = QtWidgets.QFileDialog.getOpenFileName(self, "Select a puzzle.py", '', "Puzzle (*.py)")[0]
+                if not path: return
+                self.puzzlePath.setText(path)
 
         return GeneralTab()
 
