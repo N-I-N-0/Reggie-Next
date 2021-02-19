@@ -89,26 +89,6 @@ import globals_
 ################################################################################
 ################################################################################
 
-# Check if Cython is available
-try:
-    import pyximport
-    pyximport.install()
-
-    import cython_available
-
-except:
-    print("Cython is not available!")
-    print("Expect Reggie to be very slow!\n")
-    globals_.cython_available = False
-
-else:
-    del cython_available
-    globals_.cython_available = True
-
-################################################################################
-################################################################################
-################################################################################
-
 from libs import lh
 from ui import GetIcon, SetAppStyle, GetDefaultStyle, ListWidgetWithToolTipSignal, LoadNumberFont, LoadTheme
 from misc import LoadActionsLists, LoadTilesetNames, LoadBgANames, LoadBgBNames, LoadConstantLists, LoadObjDescriptions, LoadSpriteData, LoadSpriteListData, LoadEntranceNames, LoadTilesetInfo, FilesAreMissing, module_path, IsNSMBLevel, ChooseLevelNameDialog, LoadLevelNames, PreferencesDialog, LoadSpriteCategories, ZoomWidget, ZoomStatusWidget, RecentFilesMenu, SetGamePath, isValidGamePath
@@ -221,7 +201,7 @@ class ReggieWindow(QtWidgets.QMainWindow):
 
         # set up the window
         QtWidgets.QMainWindow.__init__(self, None)
-        self.setWindowTitle('Reggie Level Editor Next %s' % globals_.ReggieVersionShort)
+        self.setWindowTitle('Reggie! Next Level Editor %s' % globals_.ReggieVersionShort)
         self.setWindowIcon(QtGui.QIcon('reggiedata/icon.png'))
         self.setIconSize(QtCore.QSize(16, 16))
         self.setUnifiedTitleAndToolBarOnMac(True)
@@ -2121,30 +2101,26 @@ class ReggieWindow(QtWidgets.QMainWindow):
     # Functions that create items
     ###########################################################################
     # Maybe move these as static methods to their respective classes
-    def CreateLocation(self, x, y, width = 16, height = 16, id = None):
+    def CreateLocation(self, x, y, width = 16, height = 16, id_ = None):
         """
         Creates and returns a new location and makes sure it's added to
         the right lists. If 'id' is None, the next id is calculated. This
-        function returns None if 
+        function returns None if there is no free location id available.
         """
-        if id is None:
-            # This can be done more efficiently, but 255 is not that big
-            # a number so it doesn't really matter
+        if id_ is None:
+            # This can be done more efficiently, but 255 is not that big, so it
+            # does not really matter.
             all_ids = set(loc.id for loc in globals_.Area.locations)
 
-            id = 1
-            while id <= 255:
-                if id not in all_ids:
+            for id_ in range(1, 256):
+                if id_ not in all_ids:
                     break
-                id += 1
-
-            if id == 256:
+            else:
                 print("ReggieWindow#CreateLocation: No free location id")
                 return None
 
-        # global globals_.OverrideSnapping
         globals_.OverrideSnapping = True
-        loc = LocationItem(x, y, width, height, id)
+        loc = LocationItem(x, y, width, height, id_)
         globals_.OverrideSnapping = False
 
         loc.positionChanged = self.HandleObjPosChange
@@ -2211,7 +2187,7 @@ class ReggieWindow(QtWidgets.QMainWindow):
 
         ent = EntranceItem(x, y, id_, 0, 0, 0, 0, 0, 0, 0x80, 0)
         ent.positionChanged = self.HandleEntPosChange
-        
+
         # if it's the first available ID, all the other indices
         # should match, so I can just use the ID to insert
         ent.listitem = ListWidgetItem_SortsByOther(ent)
@@ -4319,7 +4295,7 @@ def main():
 
     # Set the default window icon (used for random popups and stuff)
     globals_.app.setWindowIcon(GetIcon('reggie'))
-    globals_.app.setApplicationDisplayName('Reggie Next %s' % globals_.ReggieVersionShort)
+    globals_.app.setApplicationDisplayName('Reggie! Next %s' % globals_.ReggieVersionShort)
 
     gt = setting('GridType')
 
