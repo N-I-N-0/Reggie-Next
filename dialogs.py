@@ -1001,7 +1001,7 @@ class DiagnosticToolDialog(QtWidgets.QDialog):
             b = []
             a.append([0, 0, 0, 0, 0, 0])
             b.append([0, 0, 0, 0, 0, 10, 10, 10, 0])
-            z = ZoneItem(16, 16, 448, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, a, b, b, len(globals_.Area.zones))
+            z = ZoneItem(16, 16, 448, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, a, b, b, len(globals_.Area.zones))
 
             z.UpdateTitle()
             globals_.Area.zones.append(z)

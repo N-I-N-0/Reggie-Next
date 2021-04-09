@@ -103,8 +103,10 @@ $RECYCLE.BIN/
 # Others
 /reggiedata/patches/NSMASR
 /reggiedata/patches/NSMBWer
+/reggiedata/patches/NSMLW
 /reggiedata/themes/NSMBU
 /Stage
 log.txt
 settings.ini
 openlevel.bat
+0.bat

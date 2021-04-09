@@ -59,7 +59,7 @@ class ZonesDialog(QtWidgets.QDialog):
         a = [[0, 0, 0, 0, 0, 15, 0, 0]]
         b = [[0, 0, 0, 0, 0, 10, 10, 10, 0]]
         id = len(self.zoneTabs)
-        z = ZoneItem(256, 256, 448, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, a, b, b, id)
+        z = ZoneItem(256, 256, 448, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, a, b, b, id)
         ZoneTabName = globals_.trans.string('ZonesDlg', 3, '[num]', id + 1)
         tab = ZoneTab(z)
         self.zoneTabs.append(tab)
@@ -594,6 +594,17 @@ class ZoneTab(QtWidgets.QWidget):
         self.Zone_sfx.addItems(newItems3)
         self.Zone_sfx.setCurrentIndex(z.sfxmod / 16)
 
+        hurryUpList = ("Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal")
+        slowDownList = ("Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal")
+
+        self.Zone_hurryUpSfx = QtWidgets.QComboBox()
+        self.Zone_hurryUpSfx.addItems(hurryUpList)
+        self.Zone_hurryUpSfx.setCurrentIndex(z.time100sfx / 16)
+        
+        self.Zone_slowDownSfx = QtWidgets.QComboBox()
+        self.Zone_slowDownSfx.addItems(slowDownList)
+        self.Zone_hurryUpSfx.setCurrentIndex(z.time100sfx & 0xF)
+
         self.Zone_boss = QtWidgets.QCheckBox()
         self.Zone_boss.setToolTip(globals_.trans.string('ZonesDlg', 59))
         self.Zone_boss.setChecked(z.sfxmod % 16)
@@ -602,6 +613,8 @@ class ZoneTab(QtWidgets.QWidget):
         ZoneAudioLayout.addRow(globals_.trans.string('ZonesDlg', 53), self.Zone_music)
         ZoneAudioLayout.addRow(globals_.trans.string('ZonesDlg', 68), self.Zone_musicid)
         ZoneAudioLayout.addRow(globals_.trans.string('ZonesDlg', 55), self.Zone_sfx)
+        ZoneAudioLayout.addRow("Hurry Up SFX:", self.Zone_hurryUpSfx)
+        ZoneAudioLayout.addRow("Slow Down SFX:", self.Zone_slowDownSfx)
         ZoneAudioLayout.addRow(globals_.trans.string('ZonesDlg', 58), self.Zone_boss)
 
         self.Audio.setLayout(ZoneAudioLayout)

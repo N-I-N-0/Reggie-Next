@@ -4116,6 +4116,9 @@ class ReggieWindow(QtWidgets.QMainWindow):
                 if tab.Zone_boss.isChecked():
                     z.sfxmod |= 1
 
+                z.time100sfx = tab.Zone_hurryUpSfx.currentIndex() << 4
+                z.time100sfx += tab.Zone_slowDownSfx.currentIndex()
+
                 i += 1
 
             self.actions['backgrounds'].setEnabled(len(globals_.Area.zones) > 0)

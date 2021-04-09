@@ -600,7 +600,7 @@ class Area_NSMBW(AbstractParsedArea):
         Loads block 10, the zone data
         """
         zonedata = self.blocks[9]
-        zonestruct = struct.Struct('>HHHHHHBBBBxBBBBxBB')
+        zonestruct = struct.Struct('>HHHHHHBBBBxBBBBBBB')
         zones = []
 
         for offset in range(0, len(zonedata), 24):
@@ -909,7 +909,8 @@ class Area_NSMBW(AbstractParsedArea):
         bdngstruct = struct.Struct('>4lHHhh')
         bgAstruct = struct.Struct('>xBhhhhHHHxxxBxxxx')
         bgBstruct = struct.Struct('>xBhhhhHHHxxxBxxxx')
-        zonestruct = struct.Struct('>HHHHHHBBBBxBBBBxBB')
+        #zonestruct = struct.Struct('>HHHHHHBBBBxBBBBxBB')
+        zonestruct = struct.Struct('>HHHHHHBBBBxBBBBBBB')
 
         zcount = len(globals_.Area.zones)
         buffer2 = bytearray(24 * zcount)
@@ -947,7 +948,7 @@ class Area_NSMBW(AbstractParsedArea):
                 z.objx, z.objy, z.width, z.height, z.modeldark,
                 z.terraindark, z.id, new_bound_id, z.cammode, z.camzoom,
                 z.visibility, new_bga_id, new_bgb_id, z.camtrack,
-                z.music, z.sfxmod
+                z.time100sfx, z.music, z.sfxmod
             )
 
         self.blocks[2] = bytes(buffer2)
