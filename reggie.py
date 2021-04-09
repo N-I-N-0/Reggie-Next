@@ -4116,8 +4116,8 @@ class ReggieWindow(QtWidgets.QMainWindow):
                 if tab.Zone_boss.isChecked():
                     z.sfxmod |= 1
 
-                z.time100sfx = tab.Zone_hurryUpSfx.currentIndex() << 4
-                z.time100sfx += tab.Zone_slowDownSfx.currentIndex()
+                z.time100sfx = tab.Zone_hurryUpSfx.currentIndex()
+                z.time100sfx += tab.Zone_slowDownSfx.currentIndex() * 16
 
                 i += 1
 

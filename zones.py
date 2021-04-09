@@ -599,11 +599,11 @@ class ZoneTab(QtWidgets.QWidget):
 
         self.Zone_hurryUpSfx = QtWidgets.QComboBox()
         self.Zone_hurryUpSfx.addItems(hurryUpList)
-        self.Zone_hurryUpSfx.setCurrentIndex(z.time100sfx / 16)
+        self.Zone_hurryUpSfx.setCurrentIndex(z.time100sfx & 0xF)
         
         self.Zone_slowDownSfx = QtWidgets.QComboBox()
         self.Zone_slowDownSfx.addItems(slowDownList)
-        self.Zone_hurryUpSfx.setCurrentIndex(z.time100sfx & 0xF)
+        self.Zone_slowDownSfx.setCurrentIndex(z.time100sfx >> 4 & 0xF)
 
         self.Zone_boss = QtWidgets.QCheckBox()
         self.Zone_boss.setToolTip(globals_.trans.string('ZonesDlg', 59))
