@@ -776,6 +776,7 @@ class ReggieTranslation:
                     'World 8 Castle',
                     'World 8 Doomship',
                     'Lit Tower',
+                    'Silhouette',
                 ),
                 2: (
                     'Normal/Overworld',
